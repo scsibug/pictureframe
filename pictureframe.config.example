@@ -1,0 +1,16 @@
+[FLICKR]
+ApiKey=XXXXXXXX
+ApiSecret=XXXXXXXX
+User=0000@N00
+Album=00000000000
+
+[FILES]
+Downloads=jpg_dl
+Active=album
+
+[SCREEN]
+Colors=16
+Gamma=1.2
+Width=1872
+Height=1404
+FlipFlop=true
