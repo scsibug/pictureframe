@@ -8,6 +8,7 @@ Album=00000000000
 Downloads=jpg_dl
 Active=album
 MaxQueue=100
+BloomFilterFile=dl.cache
 
 [SCREEN]
 Colors=16
