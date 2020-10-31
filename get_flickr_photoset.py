@@ -40,7 +40,7 @@ def process_photo(url, destination):
     dest_file_path = os.path.join(destination, dest_file_name)
     if (not os.path.exists(dest_file_path)):
         # Download file to temporary location
-        with tempfile.NamedTemporaryFile(mode='w+b', prefix="flickr-group-", delete=True, errors=None) as dl_file:
+        with tempfile.NamedTemporaryFile(mode='w+b', prefix="flickr-group-", delete=True) as dl_file:
             print("Saving {} ...".format(url))
             start = timer()
             r = requests.get(url)
