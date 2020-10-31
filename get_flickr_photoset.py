@@ -18,7 +18,6 @@ photoset_id = flickr_config['Photoset']
 group_id = flickr_config['Group']
 
 file_config = config['FILES']
-downloads = file_config['Downloads']
 display_dir = file_config['Active']
 max_queue_size = file_config.getint('MaxQueue', fallback=100)
 
@@ -33,13 +32,6 @@ if flipflop:
     flipflop_cmd = "-flip -flop"
 
 flickr = flickrapi.FlickrAPI(api_key, api_secret)
-
-# Get all the names of files in downloads/display dir.
-# Later, if we haven't seen those from flickr, delete them.
-jpeg_files = os.listdir(downloads)
-bmp_files = os.listdir(display_dir)
-
-active_base_names = []
 
 def process_photo(url, destination):
     print("Processing {}".format(url))
