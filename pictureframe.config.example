@@ -7,6 +7,7 @@ Album=00000000000
 [FILES]
 Downloads=jpg_dl
 Active=album
+MaxQueue=100
 
 [SCREEN]
 Colors=16
