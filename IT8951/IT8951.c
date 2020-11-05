@@ -10,11 +10,13 @@ uint32_t gulImgBufAddr; //IT8951 Image buffer address
 //-----------------------------------------------------------
 void LCDWaitForReady()
 {
+  printf("Waiting for ready...");
 	uint8_t ulData = bcm2835_gpio_lev(HRDY);
 	while(ulData == 0)
 	{
 		ulData = bcm2835_gpio_lev(HRDY);
 	}
+  printf("Ready!");
 }
 
 //-----------------------------------------------------------
@@ -24,7 +26,7 @@ void LCDWriteCmdCode(uint16_t usCmdCode)
 {
 	//Set Preamble for Write Command
 	uint16_t wPreamble = 0x6000; 
-	
+
 	LCDWaitForReady();	
 
 	bcm2835_gpio_write(CS,LOW);
@@ -541,7 +543,7 @@ uint8_t IT8951_Init()
 	
 	bcm2835_gpio_write(CS, HIGH);
 
-	printf("****** IT8951 ******\n");
+	printf("****** IT8951 Init ******\n");
 	
 	bcm2835_gpio_write(RESET, LOW);
 	bcm2835_delay(100);
@@ -567,7 +569,7 @@ uint8_t IT8951_Init()
 		IT8951SetVCOM(VCOM);
 		printf("VCOM = -%.02fV\n",(float)IT8951GetVCOM()/1000);
 	}
-	
+	printf("Finished Init\n");
 	return 0;
 }
 
