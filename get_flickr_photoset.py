@@ -20,11 +20,10 @@ group_id = flickr_config['Group']
 
 file_config = config['FILES']
 display_dir = file_config['Active']
-max_queue_size = file_config.getint('MaxQueue', fallback=100)
+max_queue_size = file_config.getint('MaxQueue', fallback=200)
 bloom_filter_file = file_config.get('BloomFilterFile', fallback='dl.cache')
 
 screen_config = config['SCREEN']
-colors = screen_config["Colors"]
 gamma = screen_config.get("Gamma", fallback="1.2")
 width = screen_config["Width"]
 height = screen_config["Height"]
@@ -35,7 +34,7 @@ if flipflop:
 
 flickr = flickrapi.FlickrAPI(api_key, api_secret)
 
-seen_filter = BloomFilter(max_elements=10000, error_rate=0.01, filename=bloom_filter_file)
+seen_filter = BloomFilter(max_elements=10000, error_rate=0.001, filename=bloom_filter_file)
 
 def process_photo(url, destination):
     print("Processing {}".format(url))
@@ -52,8 +51,7 @@ def process_photo(url, destination):
             dl_file.write(r.content)
             # convert to BMP
             start = timer()
-            # Removed -colorspace Gray
-            os.system("convert {} -colorspace gray -ordered-dither o8x8 -colors {} -contrast -contrast -gamma {} -resize {}x{} -gravity center -extent {}x{} {} {}".format(dl_file.name, colors, gamma, width, height, width, height, flipflop_cmd, dest_file_path))
+            os.system("convert {} -colorspace gray -contrast -contrast -gamma {} -resize {}x{} -gravity center -extent {}x{} {} {}".format(dl_file.name, gamma, width, height, width, height, flipflop_cmd, dest_file_path))
             end = timer()
             print("Converted in {} seconds".format(round(end-start,1)))
             # Store this file in local database
