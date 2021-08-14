@@ -10,13 +10,40 @@ uint32_t gulImgBufAddr; //IT8951 Image buffer address
 //-----------------------------------------------------------
 void LCDWaitForReady()
 {
-  printf("Waiting for ready...");
+  struct timespec ts;
+  long msec = 200;
+  long max_tries = 100;
+  ts.tv_sec = msec / 1000;
+  ts.tv_nsec = (msec % 1000) * 1000000;
+  long ready_tries = 0;
+  //printf("Waiting for ready...");
 	uint8_t ulData = bcm2835_gpio_lev(HRDY);
-	while(ulData == 0)
+	while(ulData == 0 && ready_tries < max_tries)
 	{
-		ulData = bcm2835_gpio_lev(HRDY);
+	  ready_tries += 1;
+	  //printf("Still not ready...\n");
+	  ulData = bcm2835_gpio_lev(HRDY);
+          nanosleep(&ts, &ts);
 	}
-  printf("Ready!");
+	if (ready_tries == max_tries) {
+	  printf("Giving up, device was not ready (but attempting reset first)\n");
+	  	bcm2835_spi_begin();
+	bcm2835_spi_setBitOrder(BCM2835_SPI_BIT_ORDER_MSBFIRST);   		//default
+	bcm2835_spi_setDataMode(BCM2835_SPI_MODE0);               		//default
+	bcm2835_spi_setClockDivider(BCM2835_SPI_CLOCK_DIVIDER_32);		//default
+	
+	bcm2835_gpio_fsel(CS, BCM2835_GPIO_FSEL_OUTP);  
+	bcm2835_gpio_fsel(HRDY, BCM2835_GPIO_FSEL_INPT);
+	bcm2835_gpio_fsel(RESET, BCM2835_GPIO_FSEL_OUTP);
+	
+	bcm2835_gpio_write(CS, HIGH);
+
+	  bcm2835_gpio_write(RESET, LOW);
+	  bcm2835_delay(100);
+	  bcm2835_gpio_write(RESET, HIGH);
+	  exit(1);
+	}
+  //printf("Ready!");
 }
 
 //-----------------------------------------------------------
@@ -548,7 +575,7 @@ uint8_t IT8951_Init()
 	bcm2835_gpio_write(RESET, LOW);
 	bcm2835_delay(100);
 	bcm2835_gpio_write(RESET, HIGH);
-
+	printf("Getting device info...\n");
 	//Get Device Info
 	GetIT8951SystemInfo(&gstI80DevInfo);
 	
@@ -573,6 +600,11 @@ uint8_t IT8951_Init()
 	return 0;
 }
 
+void IT8951_CancelNoFree()
+{
+	bcm2835_spi_end();
+	bcm2835_close();
+}
 void IT8951_Cancel()
 {
 	free(gpFrameBuf);

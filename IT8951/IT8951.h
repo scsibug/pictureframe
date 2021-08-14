@@ -6,6 +6,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+#include <errno.h>
 #include "miniGUI.h"
 
 #define CS 				8
@@ -128,6 +130,8 @@ typedef struct
 
 uint8_t IT8951_Init(void);
 void IT8951_Cancel(void);
+void IT8951_CancelNoFree(void);
+void IT8951StandBy(void);
 void IT8951DisplayExample(void);
 void IT8951DisplayExample2(void);
 void IT8951Display1bppExample2(void);
