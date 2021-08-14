@@ -15,7 +15,7 @@ config.read('pictureframe.config')
 flickr_config = config['FLICKR']
 api_key = flickr_config['ApiKey']
 api_secret = flickr_config['ApiSecret']
-photoset_id = flickr_config['Photoset']
+#photoset_id = flickr_config['Photoset']
 group_id = flickr_config['Group']
 
 file_config = config['FILES']
@@ -66,9 +66,12 @@ if display_dir_size >= max_queue_size:
 # group queue.  
 
 print(group_id)
-group_photo_page = flickr.groups.pools.getPhotos(group_id=group_id, per_page=100, extras='url_o, url_k')
+group_photo_page = flickr.groups.pools.getPhotos(group_id=group_id, per_page=500, extras='url_o, url_k, views')
 for results in group_photo_page:
     for photo in results:
+        if int(photo.get('views')) < 50:
+            print("Skipping... view count is only {}".format(photo.get('views')))
+            continue
         print("Checking photo '{}'".format(photo.get('title')))
         urls = [photo.get('url_o'), photo.get('url_k')]
         url = next((item for item in urls if item is not None), None)
